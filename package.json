@@ -1,0 +1,32 @@
+{
+  "name": "url_shortener",
+  "version": "1.0.0",
+  "description": "URL Shortener microservice",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mesarikaya/URL-shortener-microservice.git"
+  },
+  "keywords": [
+    "url",
+    "shortener"
+  ],
+  "author": "Ergin Sarikaya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mesarikaya/URL-shortener-microservice/issues"
+  },
+  "homepage": "https://github.com/mesarikaya/URL-shortener-microservice#readme",
+  "dependencies": {
+    "cur.lv": "^1.0.0",
+    "express": "^4.14.0",
+    "mongodb": "^2.2.22",
+    "request": "^2.79.0",
+    "url-exists": "^1.0.3",
+    "url-valid": "^0.3.0",
+    "valid-url": "^1.0.9"
+  }
+}
