@@ -6,7 +6,7 @@ var api = require('./App/app.js');
 var cur=require("cur.lv")();
 
 // Connection URL
-var url = 'mongodb://localhost:27017/url_shortener_microservice';
+var url = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/url-shortener';
 
 mongo.connect(url, function(err,db){
     if (err) {
