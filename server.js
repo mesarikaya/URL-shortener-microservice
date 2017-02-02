@@ -24,7 +24,7 @@ mongo.MongoClient.connect(url, function(err,db){
         replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
     };
     
-    db.createCollection("short_urls",options);
+    db.createCollection("short_urls");
     
     //Set the html 
     app.use(express.static(__dirname + "/../Public"));
