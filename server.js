@@ -20,11 +20,11 @@ mongo.MongoClient.connect(url, function(err,db){
     app.set('view engine', 'jade');
     // Create collection
     var options = {
-        server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 3000 } }, 
-        replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 3000 } }
+        server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
+        replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
     };
     
-    db.createCollection("short_urls");
+    db.createCollection("short_urls",options);
     
     //Set the html 
     app.use(express.static(__dirname + "/../Public"));
