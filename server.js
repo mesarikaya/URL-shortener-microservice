@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express')
 var app = express()
 var mongo = require('mongodb').MongoClient
@@ -16,16 +18,22 @@ mongo.connect(url, function(err,db){
     
     // Create collection
     var options = {
-        server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
-        replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
+        server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 3000 } }, 
+        replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 3000 } }
     };
     
-    db.createCollection("short_urls",options);
+    db.createCollection("short_urls");
     
     //Set the html 
     app.use(express.static(__dirname + "/../Public"));
     
     //call the app
     api(app, validUrl, cur, db);
+    
+    var port = process.env.PORT || 8080;
+    app.listen(port, function() {
+        console.log('Node.js listening on port ' + port);
+    });
+    
 });
 

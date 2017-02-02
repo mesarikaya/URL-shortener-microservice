@@ -24,6 +24,7 @@
   "dependencies": {
     "cur.lv": "^1.0.0",
     "express": "^4.14.0",
+    "express-redirect": "^1.2.2",
     "mongodb": "^2.2.22",
     "node": "0.0.0",
     "request": "^2.79.0",
