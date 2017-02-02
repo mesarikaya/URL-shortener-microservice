@@ -2,18 +2,16 @@
 
 module.exports = function(app,  validUrl, cur, db) {
     // Check the /newurl/:url combination
-    var collection = db.collection('short_urls');
-    
-    app.get('/newurl/:url*', function (req, res) {
+    var hostwebsite = "https://url-shortener-microservice-mesarikaya.c9users.io/";
+    app.get('/new/:url*', function (req, res) {
+        var collection = db.collection('short_urls');
+        
         //Check if url is valid via using valid url package
-        if (req.params.url.slice(4) === 'http' || req.params.url.slice(5) === 'https'){
-            var url = req.params.url + '';
-        }
-        else{
-            var url = 'http://' + req.params.url;
-        }
+        var url = req.originalUrl.split('/new/')[1];
+        console.log(req.originalUrl.split('/new/')[1]);
         
         validUrl(url, function (err, valid) {
+          console.log('Url valid? is: ' , valid);
           if (err){
              throw err; // if function gives error, share error message
           }
@@ -23,12 +21,12 @@ module.exports = function(app,  validUrl, cur, db) {
           }
           else{//Generate a short url and save to the database
              cur.short(url,function(val){
-                val = val +'';
+                val = val + '';
                 val = val.slice(14); // remove the parts of the url with curl.lv
-                //console.log('updating the database with document: ', {'original_url':req.params.url, 'short_url':val} );
-                var addition = {'original_url':req.params.url, 'short_url':val};
+                console.log('updating the database with document: ', {'original_url':url, 'short_url':hostwebsite+""+val} );
+                var addition = {'original_url':url, 'short_url':hostwebsite+""+val};
                 collection.insertOne(addition);
-                res.send({'original_url':req.params.url, 'short_url':val});
+                res.send({'original_url':url, 'short_url':hostwebsite+""+val});
              });
           }
         });
@@ -36,19 +34,22 @@ module.exports = function(app,  validUrl, cur, db) {
     
     // Check extension with short url
     app.get('/:shortURL',function (req, res) {
-             // Check if URL is in the database
-        collection.find({'short_url':req.params.shortURL}).toArray(function(err,doc){
+        var collection = db.collection('short_urls');
+        // Check if URL is in the database
+        var url = hostwebsite + "" + req.params.shortURL
+        collection.findOne({'short_url':url},function(err,doc){
             if (err) throw err
-                    
-            if (typeof doc[0] !== 'undefined'){
-                console.log("http" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url);
+            //console.log(doc)
+            if (typeof doc !== 'undefined'){
+                console.log(doc.original_url);
                 //res.writeHead(302, {Location: "http" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url});
                 //res.end(console.log('Redirecting to webpage') + '\n');
-                res.statusCode = 301;
-                res.setHeader("Location","http" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url);
-                res.end();
-                
-                //return res.redirect(301,"http" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url);
+                /* res.statusCode = 301;
+                res.setHeader("Location","http" + (req.socket.encrypted ? "s" : "") + "://" + doc.original_url);
+                res.end();*/
+                console.log('Found ' + doc);
+                console.log('redirecting to: ',doc.original_url);
+                res.redirect(302,doc.original_url);
             }
             else {
                 res.send({'Error':'Url is not in the database.'});
