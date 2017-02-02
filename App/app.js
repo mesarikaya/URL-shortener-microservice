@@ -1,4 +1,4 @@
-module.exports = function(app,  validUrl, cur, db, collection) {
+module.exports = function(app,  validUrl, cur, db) {
     // Check the /newurl/:url combination
     var collection = db.collection('short_urls');
     
@@ -33,44 +33,6 @@ module.exports = function(app,  validUrl, cur, db, collection) {
           
         });
     });
-          //if url is valid
-            //check if it exists in the collection
-            
-            //If it does not exist in the collection, insert it as new entry
-            //create a short url using cur.lv package and send the message
-
-         
-                //var found = 0
-                //var result = collection.findOne({'original_url':val})
-                /*,function(err,docs){
-                   if (err){
-                       console.error("Find error:", err, docs)
-                   }
-                   else{
-                        console.log(docs)
-                        if (docs){
-                            console.log("document is on the list: ", docs);
-                        }
-                        else{
-                            console.log('updating the database with document: ', {'original_url':req.params.url, 'short_url':val} );
-                            var addition = {'original_url':req.params.url, 'short_url':val};
-                            collection.insertOne(addition);
-                            collection.save(addition);
-                            console.log("Database is updated.");
-                        }
-                   }
-                });*/
-
-                //console.log("Documents:", collection.findOne({'original_url':req.params.url}));
-                //res.send({'original_url':req.params.url, 'short_url':val});
-
-          //  });
-           // console.log("shortened_url ", shortened_url);
-        //}
-          
-         //     console.log("The url is: ",  validURL);
-              
-        //});
     
     // Check extension with short url
     app.route('/:shortURL')
