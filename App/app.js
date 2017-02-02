@@ -2,7 +2,7 @@
 
 module.exports = function(app,  validUrl, cur, db) {
     // Check the /newurl/:url combination
-    var hostwebsite = "https://url-shortener-microservice-mesarikaya.c9users.io/";
+    var hostwebsite = "https://url-shortener-microservices.herokuapp.com/";
     app.get('/new/:url*', function (req, res) {
         var collection = db.collection('short_urls');
         
