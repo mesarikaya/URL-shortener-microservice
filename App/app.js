@@ -2,13 +2,20 @@
 
 module.exports = function(app,  validUrl, cur, db) {
     // Check the /newurl/:url combination
-    var hostwebsite = "https://url-shortener-microservices.herokuapp.com/";
+    var collection = db.collection('short_urls');
+    
     app.get('/new/:url*', function (req, res) {
-        var collection = db.collection('short_urls');
-        
+        var hostwebsite = req.protocol + '://' + req.get('host');
         //Check if url is valid via using valid url package
         var url = req.originalUrl.split('/new/')[1];
         console.log(req.originalUrl.split('/new/')[1]);
+        
+        console.log("url slice: ",process.env, "as:", url.slice(0,4));
+        
+        if (url.slice(0,4)!=='http' || url.slice(0,5)!=='https'){
+            url = "http://"+url;
+        }
+        
         
         validUrl(url, function (err, valid) {
           console.log('Url valid? is: ' , valid);
@@ -23,10 +30,10 @@ module.exports = function(app,  validUrl, cur, db) {
              cur.short(url,function(val){
                 val = val + '';
                 val = val.slice(14); // remove the parts of the url with curl.lv
-                console.log('updating the database with document: ', {'original_url':url, 'short_url':hostwebsite+""+val} );
-                var addition = {'original_url':url, 'short_url':hostwebsite+""+val};
+                console.log('updating the database with document: ', {'original_url':url, 'short_url':hostwebsite+"/"+val} );
+                var addition = {'original_url':url, 'short_url':hostwebsite+"/"+val};
                 collection.insertOne(addition);
-                res.send({'original_url':url, 'short_url':hostwebsite+""+val});
+                res.send({'original_url':url, 'short_url':hostwebsite+"/"+val});
              });
           }
         });
@@ -34,12 +41,15 @@ module.exports = function(app,  validUrl, cur, db) {
     
     // Check extension with short url
     app.get('/:shortURL',function (req, res) {
-        var collection = db.collection('short_urls');
         // Check if URL is in the database
-        var url = hostwebsite + "" + req.params.shortURL
+        var hostwebsite = req.protocol + '://' + req.get('host');
+        console.log("req:", hostwebsite, "url checking: ",req.params.shortURL);
+        var url = hostwebsite + "/" + req.params.shortURL;
+        console.log("check url: ", url);
+        
         collection.findOne({'short_url':url},function(err,doc){
             if (err) throw err
-            //console.log(doc)
+            console.log(doc);
             if (typeof doc !== 'undefined'){
                 console.log(doc.original_url);
                 //res.writeHead(302, {Location: "http" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url});

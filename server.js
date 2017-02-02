@@ -2,7 +2,6 @@
 
 var express = require('express');
 var app = express();
-var path = require('path');
 var mongo = require('mongodb');
 var validUrl = require('url-valid');
 var api = require('./App/app.js');
@@ -16,8 +15,7 @@ mongo.MongoClient.connect(url, function(err,db){
         throw err;
     }
     
-    app.set('views', path.join(__dirname, 'views'));
-    app.set('view engine', 'jade');
+
     // Create collection
     var options = {
         server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
