@@ -6,7 +6,7 @@ module.exports = function(app,  validUrl, cur, db) {
     
     app.get('/new/:url*', function (req, res) {
         
-        console.log("process env: ", process.env);
+        // Retrieve and format host website
         if (typeof process.env.API_URL !== undefined){
             if (req.protocol === "https"){
                 var hostwebsite = req.protocol + '://' + req.get('host');
@@ -20,17 +20,14 @@ module.exports = function(app,  validUrl, cur, db) {
             var hostwebsite = process.env.API_URL;
         }
         
-        //Check if url is valid via using valid url package
+        // format url
         var url = req.originalUrl.split('/new/')[1];
-        console.log(req.originalUrl.split('/new/')[1]);
-        
-        console.log("url slice: ",process.env, "as:", url.slice(0,4));
         
         if (url.slice(0,4)!=='http' || url.slice(0,5)!=='https'){
             url = "https://"+url;
         }
         
-        
+        //Check if url is valid via using valid url package using url-valid package
         validUrl(url, function (err, valid) {
           console.log('Url valid? is: ' , valid);
           if (err){
@@ -40,7 +37,7 @@ module.exports = function(app,  validUrl, cur, db) {
              //console.log('url isss: ', valid);
              res.send({'Error':'Please enter a valid url.'});
           }
-          else{//Generate a short url and save to the database
+          else{//Generate a short url using curl package and save to the database
              cur.short(url,function(val){
                 val = val + '';
                 val = val.slice(14); // remove the parts of the url with curl.lv
@@ -56,9 +53,9 @@ module.exports = function(app,  validUrl, cur, db) {
     // Check extension with short url
     app.get('/:shortURL',function (req, res) {
         // Check if URL is in the database
-        if (req.params.shortURL !== "favicon.ico" ){
+        if (req.params.shortURL !== "favicon.ico" ){//c9 open it with favicon.ico extension. report this as error and only seacrh databse when user adds an extension
            if (typeof process.env.API_URL !== undefined){
-            if (req.protocol === "https"){
+            if (req.protocol === "https"){ //Check the prottocol to see if it is https
                 var hostwebsite = req.protocol + '://' + req.get('host');
             }
             else{
@@ -69,20 +66,11 @@ module.exports = function(app,  validUrl, cur, db) {
                 var hostwebsite = process.env.API_URL;
             }
             
-            console.log("req:", hostwebsite, "url checking: ",req.params.shortURL);
             var url = hostwebsite + "/" + req.params.shortURL;
-            console.log("check url: ", url);
             
             collection.findOne({'short_url':url},function(err,doc){
                 if (err) throw err
-                console.log(doc);
                 if (typeof doc !== 'undefined'){
-                    console.log(doc.original_url);
-                    //res.writeHead(302, {Location: "http" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url});
-                    //res.end(console.log('Redirecting to webpage') + '\n');
-                    /* res.statusCode = 301;
-                    res.setHeader("Location","http" + (req.socket.encrypted ? "s" : "") + "://" + doc.original_url);
-                    res.end();*/
                     console.log('Found ' + doc);
                     console.log('redirecting to: ',doc.original_url);
                     res.redirect(302,doc.original_url);

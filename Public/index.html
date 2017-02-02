@@ -12,18 +12,21 @@
 
             <blockquote>
                 This microservice shortens the url provided by the user to the web browser addess. Below is how to use this service:
-                <ul>1-) Enter the web link to the explorer address (see below for example entries)</ul>
-                    <ul><h4>Example usage:</h4>
-                        <code>https://https://url-shortener-microservices.herokuapp.com/newuser/www.google.com</code><br>
+                <ul>1-) For new short url creation to database, enter the web link to the explorer address.
+                    <ul><h4>Example:</h4>
+                        <code>https://url-shortener-microservices.herokuapp.com/new/www.bbc.com</code>
                         <h4>Example output:</h4>
                         <code>
-                                {
-                                  "shortened_url": www.google.com,
-                                  "original_url": 'l2kxja'
-                                }
+                            {"original_url":"https://www.bbc.com","short_url":"https://url-shortener-microservices.herokuapp.com/14lu55"}
                         </code> 
                     </ul>
-                <ul>2-) If entry is invalid - the service will provide an error.</ul>
+                </ul>
+                <ul>2-) For redirecting from a short url to the original website, enter the newly generated short link to the explorer address.
+                    <ul><h4>Example:</h4>
+                        <code>https://url-shortener-microservices.herokuapp.com/14lu55</code><br>
+                        <h4> This would redirect to https://www.bbc.com</h4>
+                    </ul>
+                </ul>
             </blockquote>
             
         </div>
