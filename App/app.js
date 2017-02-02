@@ -8,7 +8,13 @@ module.exports = function(app,  validUrl, cur, db) {
         
         console.log("process env: ", process.env);
         if (typeof process.env.API_URL !== undefined){
-            var hostwebsite = req.protocol + '://' + req.get('host');
+            if (req.protocol === "https"){
+                var hostwebsite = req.protocol + '://' + req.get('host');
+            }
+            else{
+                var hostwebsite = req.protocol + 's://' + req.get('host');
+            }
+            
         }
         else{
             var hostwebsite = process.env.API_URL;
@@ -21,7 +27,7 @@ module.exports = function(app,  validUrl, cur, db) {
         console.log("url slice: ",process.env, "as:", url.slice(0,4));
         
         if (url.slice(0,4)!=='http' || url.slice(0,5)!=='https'){
-            url = "http://"+url;
+            url = "https://"+url;
         }
         
         
@@ -50,35 +56,46 @@ module.exports = function(app,  validUrl, cur, db) {
     // Check extension with short url
     app.get('/:shortURL',function (req, res) {
         // Check if URL is in the database
-        if (typeof process.env.API_URL !== undefined){
-            var hostwebsite = req.protocol + '://' + req.get('host');
+        if (req.params.shortURL !== "favicon.ico" ){
+           if (typeof process.env.API_URL !== undefined){
+            if (req.protocol === "https"){
+                var hostwebsite = req.protocol + '://' + req.get('host');
+            }
+            else{
+                var hostwebsite = req.protocol + 's://' + req.get('host');
+            }
+            }
+            else{
+                var hostwebsite = process.env.API_URL;
+            }
+            
+            console.log("req:", hostwebsite, "url checking: ",req.params.shortURL);
+            var url = hostwebsite + "/" + req.params.shortURL;
+            console.log("check url: ", url);
+            
+            collection.findOne({'short_url':url},function(err,doc){
+                if (err) throw err
+                console.log(doc);
+                if (typeof doc !== 'undefined'){
+                    console.log(doc.original_url);
+                    //res.writeHead(302, {Location: "http" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url});
+                    //res.end(console.log('Redirecting to webpage') + '\n');
+                    /* res.statusCode = 301;
+                    res.setHeader("Location","http" + (req.socket.encrypted ? "s" : "") + "://" + doc.original_url);
+                    res.end();*/
+                    console.log('Found ' + doc);
+                    console.log('redirecting to: ',doc.original_url);
+                    res.redirect(302,doc.original_url);
+                }
+                else {
+                    res.send({'Error':'Url is not in the database.'});
+                }
+            }); 
         }
         else{
-            var hostwebsite = process.env.API_URL;
+            res.send({'Error':'Url is not in the database.'});
         }
         
-        console.log("req:", hostwebsite, "url checking: ",req.params.shortURL);
-        var url = hostwebsite + "/" + req.params.shortURL;
-        console.log("check url: ", url);
-        
-        collection.findOne({'short_url':url},function(err,doc){
-            if (err) throw err
-            console.log(doc);
-            if (typeof doc !== 'undefined'){
-                console.log(doc.original_url);
-                //res.writeHead(302, {Location: "http" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url});
-                //res.end(console.log('Redirecting to webpage') + '\n');
-                /* res.statusCode = 301;
-                res.setHeader("Location","http" + (req.socket.encrypted ? "s" : "") + "://" + doc.original_url);
-                res.end();*/
-                console.log('Found ' + doc);
-                console.log('redirecting to: ',doc.original_url);
-                res.redirect(302,doc.original_url);
-            }
-            else {
-                res.send({'Error':'Url is not in the database.'});
-            }
-        });
     })
     
     // Check home page on open
