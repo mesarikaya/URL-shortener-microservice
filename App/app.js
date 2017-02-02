@@ -38,17 +38,21 @@ module.exports = function(app,  validUrl, cur, db) {
     app.route('/:shortURL')
         .get(function (req, res) {
             // Check if URL is in the database
-            collection.find({'short_url':req.params.shortURL}).toArray(function(err,doc){
-                if (err) throw err
-                
-                if (typeof doc[0] !== 'undefined'){
-                    console.log("https" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url);
-                    res.redirect("https" + "://" + doc[0].original_url);
-                }
-                else {
-                    res.send({'Error':'Url is not in the database.'});
-                }
-            });
+            
+             var url = process.env.APP_URL + req.params.shortURL;
+             if (url != process.env.APP_URL + 'favicon.ico') {
+                collection.find({'short_url':req.params.shortURL}).toArray(function(err,doc){
+                    if (err) throw err
+                    
+                    if (typeof doc[0] !== 'undefined'){
+                        console.log("https" + (req.socket.encrypted ? "s" : "") + "://" + doc[0].original_url);
+                        res.redirect("https" + "://" + doc[0].original_url);
+                    }
+                    else {
+                        res.send({'Error':'Url is not in the database.'});
+                    }
+                });
+             }
         })
     
     // Check home page on open

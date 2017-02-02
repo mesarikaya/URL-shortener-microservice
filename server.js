@@ -17,7 +17,7 @@ mongo.connect(url, function(err,db){
     // Create collection
     var options = {
         server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
-        replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } } 
+        replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
     };
     
     db.createCollection("short_urls",options);
