@@ -69,8 +69,8 @@ module.exports = function(app,  validUrl, cur, db) {
             var url = hostwebsite + "/" + req.params.shortURL;
             
             collection.findOne({'short_url':url},function(err,doc){
-                if (err) throw err
-                if (typeof doc !== 'undefined'){
+                if (err) throw res.send({'Error':'Error in connecting database.'});
+                if (doc){
                     console.log('Found ' + doc);
                     console.log('redirecting to: ',doc.original_url);
                     res.redirect(302,doc.original_url);
