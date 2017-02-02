@@ -5,7 +5,15 @@ module.exports = function(app,  validUrl, cur, db) {
     var collection = db.collection('short_urls');
     
     app.get('/new/:url*', function (req, res) {
-        var hostwebsite = req.protocol + '://' + req.get('host');
+        
+        console.log("process env: ", process.env);
+        if (typeof process.env.API_URL !== undefined){
+            var hostwebsite = req.protocol + '://' + req.get('host');
+        }
+        else{
+            var hostwebsite = process.env.API_URL;
+        }
+        
         //Check if url is valid via using valid url package
         var url = req.originalUrl.split('/new/')[1];
         console.log(req.originalUrl.split('/new/')[1]);
@@ -42,7 +50,13 @@ module.exports = function(app,  validUrl, cur, db) {
     // Check extension with short url
     app.get('/:shortURL',function (req, res) {
         // Check if URL is in the database
-        var hostwebsite = req.protocol + '://' + req.get('host');
+        if (typeof process.env.API_URL !== undefined){
+            var hostwebsite = req.protocol + '://' + req.get('host');
+        }
+        else{
+            var hostwebsite = process.env.API_URL;
+        }
+        
         console.log("req:", hostwebsite, "url checking: ",req.params.shortURL);
         var url = hostwebsite + "/" + req.params.shortURL;
         console.log("check url: ", url);
