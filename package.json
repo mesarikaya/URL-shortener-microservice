@@ -27,9 +27,6 @@
     "express-redirect": "^1.2.2",
     "mongodb": "^2.2.22",
     "node": "0.0.0",
-    "request": "^2.79.0",
-    "url-exists": "^1.0.3",
-    "url-valid": "^0.3.0",
-    "valid-url": "^1.0.9"
+    "url-valid": "^0.3.0"
   }
 }
