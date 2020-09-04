@@ -25,7 +25,7 @@
     "cur.lv": "^1.0.0",
     "express": "^4.14.0",
     "express-redirect": "^1.2.2",
-    "mongodb": "^2.2.22",
+    "mongodb": "^3.6.1",
     "node": "0.0.0",
     "url-valid": "^0.3.0"
   }
